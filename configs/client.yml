@@ -1,0 +1,12 @@
+grpc:
+  host: localhost
+  port: 5099
+logging:
+  level: debug
+  format-type: line # allowed: line, structured (currently unused)
+  output: stdout # allowed: stdout, stderr, filesystem
+  colored: false
+  report-caller: false
+messaging-server:
+  host: localhost
+  port: 4222
