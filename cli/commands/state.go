@@ -81,11 +81,16 @@ func (cli *CLI) Setup() {
 	cobra.OnInitialize(func() {
 		cliInstance = cli
 	})
+	cobra.AddTemplateFunc("Authors", func() string { return Authors })
+	cobra.AddTemplateFunc("Copyright", func() string { return Copyright })
+	cobra.AddTemplateFunc("Support", func() string { return Support })
+	cobra.AddTemplateFunc("Website", func() string { return Website })
 	rootCmd.PersistentFlags().StringVarP(
 		&cli.ConfigFile,
 		"config", "c",
 		"",
 		"configuration file to use")
+	rootCmd.SetHelpTemplate(helpTemplate)
 }
 
 // SetupConfiguration ...
