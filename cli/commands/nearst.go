@@ -24,10 +24,22 @@ func init() {
 	rootCmd.AddCommand(nearestCmd)
 	nearestCmd.Flags().StringVarP(&rawCenter, "center", "",
 		"60.1699::24.9384::Helsinki Center",
-		"double-colon separated center point data of the format 'lat::long::description'")
+		"double-colon separated center point data of the format\n"+
+			"'lat::long::description'; additionally, you may choose\n"+
+			"to pass one of the following pre-defined points:\n"+
+			"  * "+tool.Tolkien+"\n")
+	nearestCmd.Flags().StringVarP(&rawPoints, "points", "p",
+		"helskini",
+		"vertical-bar separated list of points of the format\n"+
+			"'point|point|...' where each point has the same format\n"+
+			"as the 'center' flag above; additionally, you may choose\n"+
+			"to pass one of the following pre-defined example points:\n"+
+			"  * "+tool.Helsinki+"\n"+
+			"  * "+tool.Oxford+"\n")
 }
 
 var rawCenter string
+var rawPoints string
 var nearestCmd = &cobra.Command{
 	Use:   "nearest",
 	Short: "Get the nearest points",
@@ -36,6 +48,6 @@ var nearestCmd = &cobra.Command{
 		log.Debug("Args:", args)
 		log.Debug("Center:", rawCenter)
 		log.Tracef("cmd: %#v", cmd)
-		tool.Run(rawCenter)
+		tool.Run(rawCenter, rawPoints)
 	},
 }
