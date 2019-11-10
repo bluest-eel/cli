@@ -64,7 +64,7 @@ bin:
 
 bin/$(BIN): bin
 	@echo '>> Building CLI binary'
-	@GO111MODULE=$(GO111MODULE) $(GO) build -ldflags "$(LDFLAGS)" -o bin/$(BIN) ./cmd/bluest-eel.go
+	@GO111MODULE=$(GO111MODULE) $(GO) build -ldflags "$(LDFLAGS)" -o bin/$(BIN) ./cmd/$(BIN)
 
 build-client: | bin/$(BIN)
 build: bin build-client
@@ -109,9 +109,28 @@ test: $(RICH_GO)
 	@echo '>> Running all tests'
 	@GO111MODULE=$(GO111MODULE) $(RICH_GO) test ./... -v
 
-test-nocolor: 
+test-nocolor:
 	@echo '>> Running all tests'
 	@GO111MODULE=$(GO111MODULE) $(GO) test ./... -v
+
+#############################################################################
+###   Release Process   #####################################################
+#############################################################################
+
+tag:
+	@echo "Tags:"
+	@git tag|tail -5
+	@git tag "v$(VERSION)"
+	@echo "New tag list:"
+	@git tag|tail -6
+
+tag-and-push: tag
+	@git push --tags
+
+tag-delete: VERSION ?= 0.0.0
+tag-delete:
+	@git tag --delete v$(VERSION)
+	@git push --delete origin v$(VERSION)
 
 #############################################################################
 ###   Misc   ################################################################
