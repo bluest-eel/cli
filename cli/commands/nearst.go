@@ -33,17 +33,18 @@ func init() {
 	nearestCmd.Flags().Float64VarP(&capRadius, "radius", "r", 20,
 		"The cap radius used to determine nearness, in kilometers")
 	nearestCmd.Flags().StringVarP(&rawCenter, "center", "",
-		"60.1699::24.9384::Helsinki Center",
+		tool.Tolkien,
 		"double-colon separated center point data of the format\n"+
 			"'lat::long::description'; additionally, you may choose\n"+
 			"to pass one of the following pre-defined points:\n"+
+			"  * "+tool.Helsinki+"\n"+
 			"  * "+tool.Tolkien+"\n")
 	nearestCmd.Flags().IntVarP(&maxCells, "max-cells", "", 8,
 		"The maximum desired number of cells in the approximation")
 	nearestCmd.Flags().IntVarP(&maxLevel, "max-levels", "", 20,
 		"The maximum cell level to be used")
 	nearestCmd.Flags().StringVarP(&rawPoints, "points", "p",
-		tool.Helsinki,
+		tool.Oxford,
 		"vertical-bar separated list of points of the format\n"+
 			"'point|point|...' where each point has the same format\n"+
 			"as the 'center' flag above; additionally, you may choose\n"+
