@@ -3,8 +3,8 @@ package main
 import (
 	"os"
 
-	"github.com/bluest-eel/state/cli/commands"
-	"github.com/bluest-eel/state/components/logging"
+	"github.com/bluest-eel/cli/commands"
+	"github.com/bluest-eel/cli/components/logging"
 	log "github.com/sirupsen/logrus"
 )
 

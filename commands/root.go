@@ -3,7 +3,7 @@ package commands
 import (
 	"strings"
 
-	"github.com/bluest-eel/state/common"
+	"github.com/bluest-eel/cli/common"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
@@ -15,13 +15,13 @@ var (
 	Copyright = strings.Join([]string{
 		"(c) 2019 Antonio Macías Ojeda",
 		"(c) 2019 BilloSystems, Ltd. Co."}, "\n  ")
-	Support = "https://github.com/bluest-eel/state/issues/new"
-	Website = "https://github.com/bluest-eel/state"
+	Support = "https://github.com/bluest-eel/cli/issues/new"
+	Website = "https://github.com/bluest-eel/cli"
 )
 
 var cliInstance *CLI
 var rootCmd = &cobra.Command{
-	Use:   "state",
+	Use:   "bluest-eel",
 	Short: "A bluest-eel CLI",
 	Long: `This tool is a placeholder for a larger effort that will live ` +
 		`in aseparate repository.`,

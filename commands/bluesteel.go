@@ -3,12 +3,11 @@ package commands
 import (
 	"os"
 
+	"github.com/bluest-eel/cli/common"
+	"github.com/bluest-eel/cli/components"
+	"github.com/bluest-eel/cli/components/config"
+	"github.com/bluest-eel/cli/components/logging"
 	cfglib "github.com/bluest-eel/common/config"
-	"github.com/bluest-eel/state/common"
-	"github.com/bluest-eel/state/components"
-	"github.com/bluest-eel/state/components/config"
-	"github.com/bluest-eel/state/components/db"
-	"github.com/bluest-eel/state/components/logging"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
@@ -17,9 +16,7 @@ import (
 type CLI struct {
 	components.Base
 	components.BaseApp
-	components.BaseDB
 	components.BaseCLI
-	Nearest *Nearest
 }
 
 // NewCLI ...
@@ -27,7 +24,6 @@ func NewCLI() *CLI {
 	cli := CLI{}
 	cli.AppName = common.AppName
 	cli.AppAbbv = common.AppAbbreviation
-	cli.Nearest = &Nearest{}
 	cli.ProjectPath = common.CallerPaths().DotPath
 	cli.RawArgs = os.Args
 	return &cli
@@ -60,7 +56,7 @@ func (cli *CLI) PostSetupPreRun() {
 	// the new inputs that may affect things:
 	cliInstance.Config = cliInstance.SetupConfiguration()
 	cliInstance.Logger = logging.LoadClient(cliInstance.Config)
-	cliInstance.SetupDBConnection()
+	// cliInstance.SetupDBConnection()
 }
 
 // SetEnvVars looks for specific values in the envionment that are not part of
@@ -107,14 +103,14 @@ func (cli *CLI) SetupConfiguration() *config.Config {
 }
 
 // SetupDBConnection ...
-func (cli *CLI) SetupDBConnection() {
-	log.Debug("Setting up database connection ...")
-	db, err := db.Open(cli.Config)
-	if err != nil {
-		log.Fatal(err)
-	}
-	cli.DB = &db
-}
+// func (cli *CLI) SetupDBConnection() {
+// 	log.Debug("Setting up database connection ...")
+// 	db, err := db.Open(cli.Config)
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
+// 	cli.DB = &db
+// }
 
 // SetupGRPCConnection ...
 func (cli *CLI) SetupGRPCConnection() {
