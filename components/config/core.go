@@ -2,50 +2,25 @@ package config
 
 import (
 	"fmt"
-	"path/filepath"
-	"runtime"
-	"strings"
 
 	"github.com/geomyidia/zylog/logger"
-	log "github.com/sirupsen/logrus"
 	cfg "github.com/spf13/viper"
 )
 
-// Configuration related constants
+// Metaconfigs ...
 const (
-	AppName         string = "bluest-eel"
-	ConfigDir       string = "configs"
-	ConfigFile      string = "client"
-	ConfigType      string = "yaml"
-	ConfigReadError string = "Fatal error config file"
+	ConfigFile string = "configs/client.yml"
 )
 
-var (
-	_, b, _, _    = runtime.Caller(0)
-	componentsDir = filepath.Dir(filepath.Dir(b))
-	projectDir    = filepath.Dir(componentsDir)
-	configsDir    = filepath.Join(projectDir, ConfigDir)
-)
-
-func init() {
-	cfg.AddConfigPath(ConfigDir)
-	cfg.SetConfigName(ConfigFile)
-	cfg.SetConfigType(ConfigType)
-	cfg.SetEnvPrefix(AppName)
-
-	cfg.SetEnvKeyReplacer(strings.NewReplacer(".", "_", "-", "_"))
-	cfg.Set("Verbose", true)
-	cfg.AutomaticEnv()
-	cfg.AddConfigPath(configsDir)
-	cfg.AddConfigPath("/")                   // support for Docker
-	cfg.AddConfigPath("/etc/bluest-eel/cli") // support for bare-metal deploys
-
-	err := cfg.ReadInConfig()
-	if err != nil {
-		log.Panicf("%s: %s", ConfigReadError, err)
-	}
-	// log.Infof("Env vars: %v", os.Environ())
-}
+/////////////////////////////////////////////////////////////////////////////
+///   In-Memory Configuration Mapper   //////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+///
+/// We use structs for converting from Viper's config to something that we
+/// can hold in-memory in order to avoid filesystem hits/penalties for
+/// hi-performance situations that require faster access to configuration data.
+/// Note that Viper's support for refreshing config from disk showed up in
+/// previous profiling efforts as a red flag, thus this change/feature.
 
 // MessagingServerConfig ...
 type MessagingServerConfig struct {
@@ -59,8 +34,14 @@ type GRPCDConfig struct {
 	Port int
 }
 
+// ClientConfig ...
+type ClientConfig struct {
+	Logging *logger.ZyLogOptions
+}
+
 // Config ...
 type Config struct {
+	Client          *ClientConfig
 	MessagingServer *MessagingServerConfig
 	GRPCD           *GRPCDConfig
 	Logging         *logger.ZyLogOptions
@@ -94,6 +75,14 @@ func NewConfig() *Config {
 		MessagingServer: &MessagingServerConfig{
 			Host: cfg.GetString("messaging-server.host"),
 			Port: cfg.GetInt("messaging-server.port"),
+		},
+		Client: &ClientConfig{
+			Logging: &logger.ZyLogOptions{
+				Colored:      cfg.GetBool("client.logging.colored"),
+				Level:        cfg.GetString("client.logging.level"),
+				Output:       cfg.GetString("client.logging.output"),
+				ReportCaller: cfg.GetBool("client.logging.report-caller"),
+			},
 		},
 	}
 }

@@ -1,3 +1,10 @@
+client:
+  logging:
+    level: info
+    format-type: line # allowed: line, structured (currently unused)
+    output: stdout # allowed: stdout, stderr, filesystem
+    colored: true
+    report-caller: true
 grpc:
   host: localhost
   port: 5099
